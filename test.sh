@@ -1,1 +1,1 @@
-curl -i http://127.0.0.1:12480/v1/image/dectect -F "image=@./darknet/data/dog.jpg"
+curl -i http://127.0.0.1:12480/image/v1/dectect -F "image=@./darknet/data/dog.jpg"

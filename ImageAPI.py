@@ -1,25 +1,27 @@
-#coding:utf-8
-#导入包
-import sys,os
-dir = os.path.join(os.getcwd(),'/darknet')
-sys.path.append(os.path.join(os.getcwd(),'darknet'))
-#导入darknet和
-import darknet as dn_handle
-from flask import request,jsonify,Blueprint,abort
+# coding=utf-8
+# 导入darknet
+from darknet import darknet as dn_handle
+from flask import request
+from flask import jsonify
+from flask import Blueprint
+from flask import abort
 
-image = Blueprint('image',__name__)
+image = Blueprint('image', __name__, url_prefix='/image')
+
 
 net, meta = dn_handle.init_net()
 
-@image.route('/image/dectect',methods=['POST'])
+
+@image.route('/v1/dectect', methods=['POST'])
 def dectect():
     try:
-        if 'image' in request:
+        if 'image' in request.files:
             post_data = request.files.get('image').read()
-            image = dn_handle.data_to_image(post_data)
-            res = dn_handle.detect2(net,meta,image)
+            jpg_data = dn_handle.data_to_image(post_data)
+            res = dn_handle.detect2(net, meta, jpg_data)
             return jsonify(res)
         else:
             abort(400)
     except Exception as e:
-        return repr(e),500
+
+        return abort(500)
