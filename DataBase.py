@@ -1,5 +1,7 @@
 # coding:utf-8
-from MySQLdb import connect
-from flask import Flask,Blueprint
+from flask_sqlalchemy import SQLAlchemy
+# mysqldb
+db = SQLAlchemy()
+
 
 
