@@ -1,18 +1,18 @@
 # coding:utf-8
 
 from flask import Flask
-from flask_login import LoginManager
-from ImageAPI import image
+from api.imageAPI import image
 from ErrorResponse import error
 from view.user_login import user_login
 from view.user_login import login_manager
+from view.admin import admin
 from config import config
 from DataBase import db
 # 设置GPU
 # dn_handle.set_gpu(0)
 
 # 需要注册的蓝图集合
-blueprints = [user_login, error, image]
+blueprints = [user_login, error, image, admin]
 # 全局关系数据库操作对象
 
 
