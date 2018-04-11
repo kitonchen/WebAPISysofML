@@ -1,30 +1,36 @@
-#coding:utf-8
-#导入包
-import sys,os
-sys.path.append(os.path.join(os.getcwd(),'darknet'))
-#导入darknet和
-import darknet as dn_handle
-from flask import Flask,jsonify,request,make_response
+# coding:utf-8
+from flask import current_app
+from flask import Flask
+from api import image
+from ErrorResponse import error
+from view import user_login, login_manager, admin
+from config import config
+from DataBase import db
+# 设置GPU
+# dn_handle.set_gpu(0)
 
-#设置GPU
-#dn_handle.set_gpu(0)
-#加载网络和元数据
+# 需要注册的蓝图集合
+blueprints = [user_login, error, image, admin]
+# 全局关系数据库操作对象
 
 
-app = Flask(__name__)
+# 加载网络和元数据
+def create_app(app_config, blue_prints):
+    app = Flask(__name__)
+        # 初始化配置
+    app.config.from_object(app_config)
+        # 创建数据库表
+    with app.app_context():
+        db.init_app(app)
+        db.create_all()
+    login_manager.init_app(app)
+        # 注册各蓝图
+    for bp in blue_prints:
+        app.register_blueprint(bp)
+    return app
 
-
-
-@app.route('/v1/image/dectect',methods=['POST'])
-def dectect():
-    try:
-        post_data = request.files.get('image').read()
-        image = dn_handle.data_to_image(post_data)
-        res = dn_handle.detect2(net,meta,image)
-        return jsonify(res)
-    except Exception as e:
-        return repr(e),500
 
 if __name__ == '__main__':
-    net, meta = dn_handle.init_net()
-    app.run(host='127.0.0.1',port=12480)
+    apisys = create_app(config['DeveConfig'], blueprints)
+    # 多线程模式
+    apisys.run(host='127.0.0.1', port=12480, threaded=True)
