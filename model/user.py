@@ -7,7 +7,7 @@ class User(UserMixin, db.Model):
     __tablename__ = 'users'
     # id自增
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    # 登录账户名，不允许重复
+    # 登录名，不允许重复
     name = db.Column(db.String(16), unique=True, nullable=False,index=True)
     password = db.Column(db.String(32), nullable=False)
     phone_number = db.Column(db.String(16), unique=True, nullable=True)

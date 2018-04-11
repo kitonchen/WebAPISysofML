@@ -1,21 +1,12 @@
 # encoding=utf-8
 
-from flask_login import login_user
-from flask_login import login_required
 from viewfile import *
-from flask import Blueprint
-from flask import request
-from flask import render_template
-from flask import jsonify
-from flask import redirect
-from flask import url_for
-from flask import flash
-from flask import session
-from flask_login import LoginManager
-from flask_login import login_user
+from flask import Blueprint, request, render_template
+from flask import jsonify, redirect, url_for, flash
+from flask_login import LoginManager, login_user
 from DataBase import db
 from model import User
-from hashlib import md5
+from misson import getmd5
 
 login_manager = LoginManager()
 login_manager.login_view = "user_login.login"
@@ -24,13 +15,6 @@ login_manager.login_view = "user_login.login"
 user_login = Blueprint('user_login', __name__,
                        template_folder='../templates',
                        static_folder='../static/user_login')
-
-
-# 字符串生成md5信息
-def getmd5(word):
-    m = md5()
-    m.update(word)
-    return m.hexdigest()
 
 
 # 从注册表单生成，用户对象
@@ -43,17 +27,19 @@ def register_user(form):
 
 # 用户登录验证
 def isvalidate_login(form):
-    # TODO ：这里的逻辑不好
     if 'username' in form and 'password' in form:
         username = form.get('username')
         password = form.get('password')
         user = User.query.filter_by(name=username).first()
-        if user is not None and user.password == getmd5(password):
+        if user is None or user.password != getmd5(password):
+            return False
+        else:
             # 合法的进行登录
-            # TODO：这里记录在线用户加1
+            # TODO：后期可以添加，记录在线用户加1
             login_user(user, remember=True)
             return True
-    return False
+    else:
+        return False
 
 
 @user_login.route('/registcheck', methods=['POST'])
@@ -78,13 +64,16 @@ def load_user(id):
 def login():
     if "GET" == request.method:
         input_user = request.args.get('user')
-        return render_template(login_html,username=input_user)
+        if input_user is None:
+            input_user = u''
+        return render_template(login_html, username=input_user)
     else:
         if isvalidate_login(request.form):
-            return render_template('admin/admin-index.html')
+            user = request.form.get('username')
+            return redirect(url_for('admin.console', login_user=user))
         else:
-            # TODO：记得加入修改好的错误文件
-            return render_template('admin/admin-404.html')
+            flash(u'用户名或密码错误', 'successful')
+        return redirect(url_for('user_login.login'))
 
 
 # 注册页面
@@ -95,18 +84,32 @@ def register():
     else:
         db.session.add(register_user(request.form))
         db.session.commit()
-        # TODO :加入一个注册成功的跳转提示
         flash(u'注册成功', 'successful')
-        return  redirect(url_for('user_login.login',user=request.form.get('username')))
+        return redirect(url_for('user_login.login', user=request.form.get('username')))
+
+    # 注册页面
+@user_login.route('/ttyregister', methods=['POST'])
+def ttyregister():
+    check_resp = check_user()
+    if check_resp.data == 'true\n':
+        db.session.add(register_user(request.form))
+        db.session.commit()
+        return jsonify({'message': 'user registe successful',
+                        'status': True})
+    else:
+        return jsonify({'message': 'user has exist',
+                        'status': False})
+
+
+
 
 
 # 用户通过代码，命令行登录
-@user_login.route('/clogin',methods=['POST'])
-def api_login():
-
+@user_login.route('/ttylogin', methods=['POST'])
+def tty_login():
     if isvalidate_login(request.form):
-        return jsonify({'message':'user login successful',
-                        'status':True})
+        return jsonify({'message': 'user login successful',
+                        'status': True})
     else:
-        return jsonify({'message':'user not found,please register one',
-                        'status':False})
+        return jsonify({'message': 'user not found,please register one',
+                        'status': False})

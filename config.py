@@ -16,6 +16,16 @@ class DevelopmentConfig(Config):
         SQLALCHEMY_DATABASE_URL = 'mysql://root:81123348chenpi@localhost/{dbname}'.format(dbname=database)
 '''
 
+
+class TestConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:chenpidaxi@localhost/test'
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_BINDS = {
+        'users': 'mysql://root:chenpidaxi@localhost/test',
+        'appmeta': 'sqlite:///test.db'
+    }
+
 config = {
-    'DeveConfig': DevelopmentConfig()
+    'DeveConfig': DevelopmentConfig(),
+    'TeseConfig': TestConfig()
 }

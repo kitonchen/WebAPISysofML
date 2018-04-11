@@ -1,2 +1,2 @@
 # coding=utf-8
-from api import imageAPI
+from imageAPI import image
