@@ -1,0 +1,9 @@
+http://localhost:12480/v1/mean POST api_key=d88119f8307cb27098fa37c69dcc1473&api_secret=None&image=./darknet/data/dog.jpg
+http://localhost:12480/v1/mean POST api_key=17eaae9ca8cee848586b34f774a43881&api_secret=None&image=./darknet/data/dog.jpg
+http://localhost:12480/v1/mean POST api_key=9f86f1749a1c73442dadce8e70439480&api_secret=None&image=./darknet/data/dog.jpg
+http://localhost:12480/v1/mean POST api_key=5acd1fd66018c7b53ab5dd183ca60a4c&api_secret=None&image=./darknet/data/dog.jpg
+http://localhost:12480/v1/mean POST api_key=1fadd633005a95adbb8aa73d11d4f4be&api_secret=None&image=./darknet/data/dog.jpg
+http://localhost:12480/v1/mean POST api_key=96ac3f3f68ab6d90c621c25ad4037062&api_secret=None&image=./darknet/data/dog.jpg
+http://localhost:12480/v1/mean POST api_key=8cdf343aa2f3d0025bcdeb98086ec055&api_secret=None&image=./darknet/data/dog.jpg
+http://localhost:12480/v1/mean POST api_key=7b15a2e1f4abf0333b945c355c504e36&api_secret=None&image=./darknet/data/dog.jpg
+http://localhost:12480/v1/mean POST api_key=fc35ec2301ff8503369c21a42d4b1f85&api_secret=None&image=./darknet/data/dog.jpg
