@@ -14,6 +14,8 @@ image = Blueprint('image', __name__, url_prefix='/image')
 net, meta = dn_handle.init_net()
 
 
+@image.route('/v1/dectect')
+
 @image.route('/v1/dectect', methods=['POST'])
 @key_required
 def dectect():

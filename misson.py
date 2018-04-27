@@ -72,3 +72,11 @@ def update_userinfo(new_name,new_email,new_phone):
     # 提交更改
     db.session.commit()
     return True
+
+def appname_check(user_name,new_appname):
+    key = Key.query.filter_by(username=user_name,
+                              app_name=new_appname).first()
+    if key is None:
+        return True
+    else:
+        return False

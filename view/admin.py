@@ -1,8 +1,9 @@
 # coding=utf-8
+import json
 from viewfile import *
 from flask import Blueprint, jsonify, redirect
 from flask import url_for, request, render_template
-from misson import update_userinfo
+from misson import update_userinfo, appname_check
 from flask_login import current_user, logout_user, login_required
 from user_login import getmd5
 from time import time
@@ -19,7 +20,8 @@ admin = Blueprint('admin', __name__,
 @admin.route('/console')
 @login_required
 def console():
-    user = request.args.get('login_user')
+    user = current_user.name
+    # 防止非法访问
     return render_template(admin_index_html, login_user=user)
 
 
@@ -84,37 +86,54 @@ def logout():
     return redirect(url_for('user_login.login'))
 
 
+@admin.route('/appcheck',methods=['POST'])
+@login_required
+def appnamecheck():
+    new_app = request.form.get('appname')
+    if appname_check(current_user.name,new_app):
+        return jsonify(True)
+    else:
+        return jsonify(False)
+
 # 登陆后生成api_key
 @admin.route('/createkey', methods=['POST'])
 @login_required
 def createkey():
     new_app = request.form.get('appname')
     new_apptype = request.form.get('apptype')
-    # 检查是否有apikey,无则生成apikey和api_sercet,并添加到mysql中
-    key = Key.query.filter_by(username=current_user.name,
-                              app_name=new_app,
-                              app_type=new_apptype).first()
-    if key is None:
-        # 生成key新的key
-        api_key = getmd5(current_user.name + str(new_app))
-        api_sercet = getmd5(current_user.password+str(time()))
-        try:
-            db.session.add(Key(current_user.name, new_app, new_apptype, api_key, api_sercet))
-            db.session.commit()
-            return jsonify({'user': current_user.name, 'app': new_app,
-                            'type': new_apptype, 'api_key': api_key, 'api_sercet': api_sercet})
-        except Exception as e:
-            raise ApiException(message='occur error when creating the api key, please retry')
-    else:
-        raise ApiException(message='key has exist')
+    api_key = getmd5(current_user.name + str(new_app))
+    api_sercet = getmd5(current_user.password+str(time()))
+    try:
+        db.session.add(Key(current_user.name, new_app, new_apptype, api_key, api_sercet))
+        db.session.commit()
+        return jsonify({'user': current_user.name, 'app_name': new_app,
+                        'type': new_apptype, 'api_key': api_key,
+                        'api_secret': api_sercet})
+    except Exception as e:
+        raise ApiException(message='occur error when creating the api key, please retry')
+
+
+@admin.route('/deletekey', methods=['POST'])
+@login_required
+def deletekey():
+    delete_app = request.form.get('appname')
+    key = Key.query.filter_by(username=current_user.name, app_name=delete_app).first()
+    try:
+        db.session.delete(key)
+        db.session.commit()
+        return jsonify({'status':'success'})
+    except Exception as e:
+        return jsonify({'status':'faile'})
 
 
 # 根据用户和应用名字查询apikey
-@admin.route('/getapikey/<string:user>/<string:app>')
+@admin.route('/getapikey',methods=['GET'])
 @login_required
-def ret_keysercet(user, app):
-    key = Key.query.filter_by(name=user, appname=app).first()
-    if not key:
-        return jsonify({'error': 'user not found'}, 404)
+def ret_keysercet():
+    keys = Key.query.filter_by(username=current_user.name).all()
+    if keys is None:
+        return jsonify({'status': 'error'}, 404)
     else:
-        return jsonify(key)
+
+        result_set=[json.dumps(key.to_dict()) for key in keys]
+        return jsonify({'status': 'success', 'keys': result_set})

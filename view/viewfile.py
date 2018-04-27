@@ -3,7 +3,7 @@
 login_html='user_login/login.html'
 register_html='user_login/register.html'
 
-#admin
+
 admin_index_html='admin/admin-index.html'
 admin_error_html='admin/admin-404.html'
 admin_help_html='admin/admin-help.html'

@@ -12,15 +12,16 @@
   <link rel="icon" type="image/png" href="admin/assets/i/favicon.png">
   <link rel="apple-touch-icon-precomposed" href="admin/assets/i/app-icon72x72@2x.png">
   <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" href="admin/assets/css/common.css">
   <link rel="stylesheet" href="admin/assets/css/amazeui.min.css"/>
   <link rel="stylesheet" href="admin/assets/css/admin.css">
+
 </head>
-<body>
 <!--[if lte IE 9]>
 <p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
   以获得更好的体验！</p>
 <![endif]-->
-
+<body>
 <header class="am-topbar admin-header">
   <div class="am-topbar-brand">
     <strong>Amaze</strong> <small>API控制台</small>
@@ -45,7 +46,6 @@
     </ul>
   </div>
 </header>
-
 <div class="am-cf admin-main">
   <!-- sidebar start -->
   <div class="admin-sidebar">
@@ -92,12 +92,34 @@
 
     <div class="am-g">
       <div class="am-u-sm-12">
-        <table class="am-table am-table-bd am-table-striped admin-content-table">
-            <div class="am-dropdown" data-am-dropdown>
-                <button class="am-btn am-btn-default am-btn-xs am-dropdown-toggle" data-am-dropdown-toggle>
-                  <span class="am-icon-cog"></span>
-                新增</button>
-            </div>
+        <div class="box">
+		<div class="demo">
+          <div class="am-btn am-btn-default am-btn-xs">
+            <a href="javascript:;" class=" flipInX">
+              <span class=" am-icon-cog">新增Key
+            </span>
+            </a>
+        </div>
+          <div id="dialogBg"></div>
+		<div id="dialog" class="animated">
+			<img class="dialogIco" width="50" height="50" src="admin/assets/images/ico.png" alt="" />
+			<div class="dialogTop">
+				<a href="javascript:;" class="claseDialogBtn">关闭</a>
+			</div>
+			<form action="" method="post" id="editForm">
+				<ul class="editInfos">
+					<li><label><font color="#ff0000">* </font>应用：<input type="text" name="appname" required value="" class="ipt" /></label></li>
+					<li><label><font color="#ff0000">* </font>类型：<input type="text" name="apptype" required value="" class="ipt" /></label></li>
+					<li><button id="submit" type="submit" class="submitBtn">生成</button></li>
+				</ul>
+			</form>
+		</div>
+		</div>
+
+
+	</div>
+
+        <table id="keytable" class="am-table am-table-bd am-table-striped admin-content-table">
           <thead>
           <tr>
             <th>应用名</th><th>API-Key</th><th>API-Secret</th><th>请求次数</th><th>管理</th>
@@ -105,25 +127,14 @@
           </thead>
 
           <tbody>
-          <tr>
-            <td>1</td><td>John Clark</td><td><a href="#">Business management</a></td> <td><span class="am-badge am-badge-success">+20</span></td>
-            <td>
-              <div class="am-dropdown" data-am-dropdown>
-                <button class="am-btn am-btn-default am-btn-xs am-dropdown-toggle" data-am-dropdown-toggle><span class="am-icon-cog"></span> <span class="am-icon-caret-down"></span></button>
-                <ul class="am-dropdown-content">
-                  <li><a href="#">删除</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
           </tbody>
         </table>
       </div>
     </div>
 
   </div>
-  <!-- content end -->
 
+  <!-- content end -->
 </div>
 
 <footer>
@@ -141,8 +152,10 @@
 
 <!--[if (gte IE 9)|!(IE)]><!-->
 <script src="admin/assets/js/jquery.min.js"></script>
-<script src="admin/assets/js/amazeui.min.js"></script>
+<script src="admin/assets/js/jquery.validate.min.js"></script>
+<script src="admin/assets/js/amazeui.js"></script>
 <!--<![endif]-->
 <script src="admin/assets/js/app.js"></script>
+<script src="admin/assets/js/index.js"></script>
 </body>
 </html>

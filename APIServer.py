@@ -6,6 +6,7 @@ from ErrorResponse import error
 from view import user_login, login_manager, admin
 from config import config
 from DataBase import db
+from sys import argv
 # 设置GPU
 # dn_handle.set_gpu(0)
 
@@ -31,6 +32,6 @@ def create_app(app_config, blue_prints):
 
 
 if __name__ == '__main__':
-    apisys = create_app(config['DeveConfig'], blueprints)
+    apisys = create_app(config['TestConfig'], blueprints)
     # 多线程模式
     apisys.run(host='127.0.0.1', port=12480, threaded=True)

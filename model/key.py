@@ -1,5 +1,4 @@
 # coding=utf-8
-from flask_login import UserMixin
 from DataBase import db
 
 
@@ -32,3 +31,8 @@ class Key(db.Model):
 
     def is_anonymous(self):
         return False
+
+    def to_dict(self):
+        return dict({'app_name':self.app_name,
+                     'api_key':self.api_key,
+                     'api_secret':self.api_secret})

@@ -27,5 +27,5 @@ class TestConfig(Config):
 
 config = {
     'DeveConfig': DevelopmentConfig(),
-    'TeseConfig': TestConfig()
+    'TestConfig': TestConfig()
 }
